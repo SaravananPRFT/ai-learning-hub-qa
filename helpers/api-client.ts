@@ -34,6 +34,10 @@ export class ApiClient {
     return this.request.get(`${ENV.API_V1}/concepts/${slug}`);
   }
 
+  async trackConceptView(slug: string) {
+    return this.request.post(`${ENV.API_V1}/concepts/${slug}/view`);
+  }
+
   async getConceptGraph(slug: string) {
     return this.request.get(`${ENV.API_V1}/concepts/${slug}/graph`);
   }

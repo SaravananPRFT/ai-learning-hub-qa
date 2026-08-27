@@ -36,7 +36,16 @@ export class ConceptDetailPage extends BasePage {
   }
 
   tab(name: ConceptTab): Locator {
-    return this.page.getByRole("button", { name, exact: true });
+    const tabIdMap: Record<ConceptTab, string> = {
+      "Overview":       "tab-overview",
+      "Architecture":   "tab-architecture",
+      "Code":           "tab-code",
+      "Projects":       "tab-projects",
+      "Experiments":    "tab-experiments",
+      "Interview Q's":  "tab-interview",
+      "Resources":      "tab-resources",
+    };
+    return this.page.getByTestId(tabIdMap[name]);
   }
 
   get activeTab(): Locator {
@@ -44,11 +53,11 @@ export class ConceptDetailPage extends BasePage {
   }
 
   get depthSelector(): Locator {
-    return this.page.locator(".flex.gap-1\\.5").filter({ hasText: /beginner/i }).first();
+    return this.page.locator("[data-testid^='depth-']").first().locator("..");
   }
 
   depthButton(level: DepthLevel): Locator {
-    return this.page.getByRole("button", { name: level, exact: true }).first();
+    return this.page.getByTestId(`depth-${level}`);
   }
 
   get prerequisiteLinks(): Locator {

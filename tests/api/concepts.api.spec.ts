@@ -109,10 +109,21 @@ test.describe("Concepts API", () => {
     await expectStatus(await api.getConcept(UNKNOWN_SLUG), 404);
   });
 
-  test("GET /concepts/{slug} increments view_count on repeated calls @regression", async ({ api }) => {
+  test("GET /concepts/{slug} does NOT mutate view_count (idempotent GET) @regression", async ({ api }) => {
     const first = await expectOkJson(await api.getConcept(PRIMARY_SLUG));
     const second = await expectOkJson(await api.getConcept(PRIMARY_SLUG));
-    expect(second.view_count).toBeGreaterThanOrEqual(first.view_count);
+    expect(second.view_count).toBe(first.view_count);
+  });
+
+  test("POST /concepts/{slug}/view increments view_count @regression", async ({ api }) => {
+    const before = await expectOkJson(await api.getConcept(PRIMARY_SLUG));
+    await expectStatus(await api.trackConceptView(PRIMARY_SLUG), 204);
+    const after = await expectOkJson(await api.getConcept(PRIMARY_SLUG));
+    expect(after.view_count).toBe((before.view_count ?? 0) + 1);
+  });
+
+  test("POST /concepts/{slug}/view returns 204 No Content @smoke", async ({ api }) => {
+    await expectStatus(await api.trackConceptView(PRIMARY_SLUG), 204);
   });
 
   // ─── Graph ────────────────────────────────────────────────────────────────

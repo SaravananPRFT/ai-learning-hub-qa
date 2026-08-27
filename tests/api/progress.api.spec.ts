@@ -66,30 +66,46 @@ test.describe("Progress API", () => {
     expect(Array.isArray(found.experiments_completed)).toBeTruthy();
   });
 
-  // ─── Assessment boundary conditions ──────────────────────────────────────
+  // ─── Assessment scoring: keyword matching + length threshold ─────────────
 
-  test("POST /assessment/submit — 21-char answer is scored as correct @P1", async ({ api }) => {
+  test("POST /assessment/submit — 50-char answer (length rule) is scored as correct @P1", async ({ api }) => {
     const body = await expectOkJson(
       await api.submitAssessment({
         concept_slug: PRIMARY_SLUG,
-        answers: [
-          { question_index: 0, answer: ASSESSMENT_ANSWERS.justAboveThreshold },
-        ],
+        answers: [{ question_index: 0, answer: ASSESSMENT_ANSWERS.longEnough }],
       })
     );
     expect(body.correct_answers).toBeGreaterThanOrEqual(1);
   });
 
-  test("POST /assessment/submit — 20-char answer is scored as incorrect @P1", async ({ api }) => {
+  test("POST /assessment/submit — 49-char answer with no keywords is scored as incorrect @P1", async ({ api }) => {
     const body = await expectOkJson(
       await api.submitAssessment({
         concept_slug: PRIMARY_SLUG,
-        answers: [
-          { question_index: 0, answer: ASSESSMENT_ANSWERS.justBelowThreshold },
-        ],
+        answers: [{ question_index: 0, answer: ASSESSMENT_ANSWERS.tooShort }],
       })
     );
     expect(body.correct_answers).toBe(0);
+  });
+
+  test("POST /assessment/submit — empty answer is always incorrect @P1", async ({ api }) => {
+    const body = await expectOkJson(
+      await api.submitAssessment({
+        concept_slug: PRIMARY_SLUG,
+        answers: [{ question_index: 0, answer: ASSESSMENT_ANSWERS.empty }],
+      })
+    );
+    expect(body.correct_answers).toBe(0);
+  });
+
+  test("POST /assessment/submit — answer with matching hint keywords is correct @P1", async ({ api }) => {
+    const body = await expectOkJson(
+      await api.submitAssessment({
+        concept_slug: PRIMARY_SLUG,
+        answers: [{ question_index: 0, answer: ASSESSMENT_ANSWERS.withKeywords }],
+      })
+    );
+    expect(body.correct_answers).toBeGreaterThanOrEqual(1);
   });
 
   test("POST /assessment/submit returns AssessmentResult schema @smoke", async ({ api }) => {

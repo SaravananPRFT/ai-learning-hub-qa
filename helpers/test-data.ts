@@ -56,12 +56,14 @@ export const PROGRESS_ACTIONS = [
   "quiz_score",
 ] as const;
 
-// Boundary values for assessment scoring (answer length > 20 = correct)
+// Scoring: correct if answer contains ≥2 keywords from the question hint OR length ≥50 chars.
+// Empty/very short answers with no matching keywords are always incorrect.
 export const ASSESSMENT_ANSWERS = {
-  justBelowThreshold: "A".repeat(20), // 20 chars — marked incorrect
-  justAboveThreshold: "A".repeat(21), // 21 chars — marked correct
+  tooShort: "A".repeat(49),   // 49 chars, no hint keywords — marked incorrect
+  longEnough: "A".repeat(50), // 50 chars minimum length — marked correct (length rule)
   empty: "",
-  meaningful: "This is a comprehensive answer about the concept that explains all key points.",
+  meaningful: "This is a comprehensive answer about the concept that explains all key points clearly.",
+  withKeywords: "RAG retrieves relevant documents then generates a grounded answer using those chunks as context.",
 };
 
 // Comparison presets from the backend

@@ -13,10 +13,14 @@ export class BasePage {
     return this.sidebar.getByRole("link", { name: label });
   }
 
+  // Prefer data-testid for nav links (stable even if labels change in game mode)
+  navLinkByPath(path: string): Locator {
+    const testId = path === "/" ? "nav-home" : `nav-${path.slice(1)}`;
+    return this.page.getByTestId(testId);
+  }
+
   get gameModeToggle(): Locator {
-    return this.sidebar.getByRole("button", {
-      name: /pixel mode|serious mode/i,
-    });
+    return this.page.getByTestId("game-mode-toggle");
   }
 
   get appLogoLink(): Locator {

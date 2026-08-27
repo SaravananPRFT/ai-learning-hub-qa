@@ -9,7 +9,11 @@ export class MentorPage extends BasePage {
   // ─── Locators ──────────────────────────────────────────────────────────────
 
   get personaList(): Locator {
-    return this.page.locator("aside .space-y-1 > button");
+    return this.page.locator("[data-testid^='persona-']");
+  }
+
+  personaButton(personaId: string): Locator {
+    return this.page.getByTestId(`persona-${personaId}`);
   }
 
   get contextInput(): Locator {
@@ -17,11 +21,11 @@ export class MentorPage extends BasePage {
   }
 
   get chatInput(): Locator {
-    return this.page.getByPlaceholder(/ask anything/i);
+    return this.page.getByTestId("mentor-chat-input");
   }
 
   get sendButton(): Locator {
-    return this.page.getByRole("button").filter({ has: this.page.locator('svg[class*="lucide-send"]') });
+    return this.page.getByTestId("mentor-send-button");
   }
 
   get chatMessages(): Locator {
@@ -58,6 +62,10 @@ export class MentorPage extends BasePage {
 
   async selectPersona(personaName: string) {
     await this.page.getByRole("button", { name: personaName }).click();
+  }
+
+  async selectPersonaById(personaId: string) {
+    await this.personaButton(personaId).click();
   }
 
   async sendMessage(text: string) {

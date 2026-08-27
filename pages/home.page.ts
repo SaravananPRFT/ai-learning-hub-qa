@@ -9,13 +9,11 @@ export class HomePage extends BasePage {
   // ─── Locators ──────────────────────────────────────────────────────────────
 
   get searchInput(): Locator {
-    return this.page.getByPlaceholder(
-      /search any technology|search a realm/i
-    );
+    return this.page.getByTestId("home-search-input");
   }
 
   get searchSubmitButton(): Locator {
-    return this.page.getByRole("button", { name: /explore|quest/i });
+    return this.page.getByTestId("home-search-submit");
   }
 
   get featureCards(): Locator {

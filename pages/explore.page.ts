@@ -9,7 +9,7 @@ export class ExplorePage extends BasePage {
   // ─── Locators ──────────────────────────────────────────────────────────────
 
   get searchInput(): Locator {
-    return this.page.getByPlaceholder(/search concepts, technologies/i);
+    return this.page.getByTestId("explore-search-input");
   }
 
   get clearSearchButton(): Locator {
@@ -17,7 +17,7 @@ export class ExplorePage extends BasePage {
   }
 
   get conceptCards(): Locator {
-    return this.page.locator(".grid > a[href^='/explore/']");
+    return this.page.locator("[data-testid^='concept-card-']");
   }
 
   get loadingSkeleton(): Locator {
@@ -29,7 +29,7 @@ export class ExplorePage extends BasePage {
   }
 
   get generateButton(): Locator {
-    return this.page.getByRole("button", { name: /generate/i });
+    return this.page.getByTestId("generate-concept-button");
   }
 
   get clearFiltersButton(): Locator {
