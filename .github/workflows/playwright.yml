@@ -1,0 +1,67 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium --with-deps
+
+      - name: Create .env for CI
+        run: |
+          cp .env.example .env
+          sed -i 's/OLLAMA_AVAILABLE=false/OLLAMA_AVAILABLE=false/' .env
+
+      # NOTE: This workflow requires the application to be running.
+      # For CI, start the app services before running tests.
+      # Uncomment and configure these steps for your CI environment:
+      #
+      # - name: Start backend
+      #   run: cd ../ai-learning-hub/backend && pip install -e . && uvicorn app.main:app &
+      #
+      # - name: Start frontend
+      #   run: cd ../ai-learning-hub/frontend && npm install && npm run build && npm run start &
+      #
+      # - name: Wait for services
+      #   run: npx wait-on http://localhost:3000 http://localhost:8000/health --timeout 60000
+
+      - name: Run API tests (smoke)
+        run: npx playwright test tests/api --grep @smoke --project api
+
+      - name: Run E2E tests (smoke)
+        run: npx playwright test tests/e2e --grep @smoke --project e2e-chromium
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: test-results/html/
+          retention-days: 14
+
+      - name: Upload Allure results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: allure-results
+          path: allure-results/
+          retention-days: 14

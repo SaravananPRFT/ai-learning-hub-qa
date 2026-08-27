@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.env
+
+# Playwright outputs
+test-results/
+playwright-report/
+allure-results/
+allure-report/
+
+# OS
+.DS_Store
+Thumbs.db

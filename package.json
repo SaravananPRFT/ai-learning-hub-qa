@@ -1,0 +1,28 @@
+{
+  "name": "ai-learning-hub-qa",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Playwright-based QA automation framework for AI Learning Hub",
+  "scripts": {
+    "test": "playwright test",
+    "test:smoke": "playwright test --grep @smoke",
+    "test:e2e": "playwright test tests/e2e",
+    "test:api": "playwright test tests/api",
+    "test:a11y": "playwright test tests/accessibility",
+    "test:headed": "playwright test --headed",
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "report:pw": "playwright show-report test-results/html",
+    "report:allure": "allure generate allure-results --clean -o allure-report && allure open allure-report",
+    "install:browsers": "playwright install chromium",
+    "install:all": "playwright install"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.47.0",
+    "@axe-core/playwright": "^4.10.0",
+    "allure-playwright": "^3.0.0",
+    "allure-commandline": "^2.30.0",
+    "dotenv": "^16.4.5",
+    "typescript": "^5.5.4"
+  }
+}
